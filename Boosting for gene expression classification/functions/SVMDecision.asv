@@ -1,0 +1,9 @@
+function result = SVMDecision(trainX,trainY,testX,testY)
+tic;            %开启时钟
+model = svmtrain(trainX,trainY);
+[result] = svmclassify(model,testX);
+AccuracyRate = sum(testY== result)/length(testY);
+% [result] = svmpredict( testX,testY, model);
+fprintf('SVM Accuracy:\n',errRate);
+ti = toc;
+fprintf('完成分类共耗时 %f sec\n', ti);
