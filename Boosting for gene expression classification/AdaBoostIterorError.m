@@ -5,8 +5,22 @@ clc;
 % load .\data\original_data\lymphoma.mat
  load .\data\original_data\colon.mat  %nci64.mat
 data=Sample';
-[m,n]=size(data);
+D{1}=data;
+load .\data\original_data\prostate.mat
+data=Sample';
+D{2}=data;
+load .\data\original_data\lymphoma.mat
+data=Sample';
+D{3}=data;
+load .\data\original_data\nci64.mat
+data=Sample';
+D{4}=data;
 
+for k=1:4
+    data=D{1,k};
+
+[m,n]=size(data);
+classNum=numel(unique(data(:,end))); 
 %Discriminant
 train_data=data(:,1:end-1);
 label_data=data(:,end);
@@ -30,7 +44,12 @@ for j=1:1:classfierNum
         trainY=trainData(:,end);
         testX=testData(:,1:end-1);
         testY=testData(:,end);
-        ada = fitensemble(trainX,trainY,'AdaBoostM1',j,'Discriminant');               
+        if classNum==2
+             ada = fitensemble(trainX,trainY,'AdaBoostM1',j,'Discriminant');   
+        else
+            ada = fitensemble(trainX,trainY,'AdaBoostM2',j,'Discriminant');   
+        end         
+%         ada = fitensemble(trainX,trainY,'AdaBoostM1',j,'Discriminant');               
         result = predict(ada,testX);
         AccuracyRate = sum(result == testY) / length(testY);        
         sumAdaBoostEveryIter=sumAdaBoostEveryIter+AccuracyRate;      
@@ -38,8 +57,29 @@ for j=1:1:classfierNum
    fprintf('*********Step iterators:%d    Average Accuracy: %d ***********\n',j,sumAdaBoostEveryIter/crossK);
    accuracy=[accuracy,sumAdaBoostEveryIter/crossK];
 end
+if k==1
+    dataString='colon';
+end
+if k==2
+    dataString='prostate';
+end
+if k==3
+    dataString='lymphoma';
+end
+if k==4
+    dataString='nci64';
+end
+% plot(1:1:classfierNum,accuracy);
+subplot(2,2,k);
+plot(1:classfierNum,accuracy);
+axis([1,classfierNum,0.5,1]);
+title(dataString);
+xlabel('classifier numbers');
+ylabel('Accuracy');
+grid on;
 
-plot(1:1:classfierNum,accuracy);
+end
+
 
 % classNum=numel(unique(data(:,end)));    %class number
 % iterators=20;
