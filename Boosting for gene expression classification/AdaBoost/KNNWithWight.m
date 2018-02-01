@@ -1,4 +1,4 @@
-function [test_Predicted_labels] = KNNWithWight(Xtrain,Ltrain,Xtest, K,Wight)
+function [test_Predicted_labels] = KNNWithWeight(Xtrain,Ltrain,Weight,varargin)
 %% This is the matlab implemenatation for K nearest neighbors
 % Input Arguments: 
 % Xtrain : training data set
@@ -14,17 +14,20 @@ function [test_Predicted_labels] = KNNWithWight(Xtrain,Ltrain,Xtest, K,Wight)
 % if(nargin < 4)
 %    K = 8; 
 % end
-[N , ~] = size(Xtrain);
-[Ntest,~] = size(Xtest);
-distance = zeros(N,Ntest);
+
 %descendingDistances = zeros(N,Nt);
 %Ltest = repmat(Xtest(1,:),N,1);
+[FiltXtrain,FiltLtrain]=FiltEX(Xtrain,Ltrain,Weight);
+
+[N , ~] = size(FiltXtrain);
+[Ntest,~] = size(Xtrain);
+distance = zeros(N,Ntest);
 
 % calculating the euclidean distance of the test samples from training
 % samples
 for i = 1: Ntest
      for j = 1: N 
-distance(j,i) = norm(Xtest(i,:)-Xtrain(j,:))/Wight(j,1);
+        distance(j,i) = norm(Xtrain(i,:)-FiltXtrain(j,:));
      end
 end
 
@@ -40,7 +43,7 @@ for i = 1:Ntest
     for j=1:K
     Ltest(j,i) = Ltrain(Index(j,i));
     end
-    test_Predicted_labels = mode(Ltest(:,i));
+    test_Predicted_labels(i) = mode(Ltest(:,i));
 end
 
 
