@@ -3,7 +3,7 @@ clear;
 clc;
 
 % load .\data\original_data\lymphoma.mat
- load .\data\original_data\colon.mat
+ load .\data\original_data\lymphoma.mat
 data=Sample';
 [m,n]=size(data);
 classNum=numel(unique(data(:,end)));    %class number
@@ -25,18 +25,18 @@ for j=1:iterators
         trainY=trainData(:,end);
         testX=testData(:,1:end-1);
         testY=testData(:,end);
-        if classNum==2
-             result = AdaBoostM1(trainX,trainY,testX,testY);
-        else
-            result = AdaBoostM2(trainX,trainY,testX,testY);
-        end         
-        sumAdaBoostEveryIter=sumAdaBoostEveryIter+result;
-        
-         if classNum==2
-            result = SVMDecision(trainX,trainY,testX,testY);
-            sumSVMEveryIter=sumSVMEveryIter+result;
-         else
-         end
+%         if classNum==2
+%              result = AdaBoostM1(trainX,trainY,testX,testY);
+%         else
+%             result = AdaBoostM2(trainX,trainY,testX,testY);
+%         end         
+%         sumAdaBoostEveryIter=sumAdaBoostEveryIter+result;
+%         
+%          if classNum==2
+%             result = SVMDecision(trainX,trainY,testX,testY);
+%             sumSVMEveryIter=sumSVMEveryIter+result;
+%          else
+%          end
 %         result = BayesNaive(trainX,trainY,testX,testY);
 %         result = DecisionTree(trainX,trainY,testX,testY);
 %         result = RandomForest(trainX,trainY,testX,testY);
