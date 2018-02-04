@@ -12,14 +12,14 @@ Original prostate data
 	
 Original lymphoma data
 	AdaBoost Average Accuracy:9.645513e-01
-	SVM Average Accuracy:0
+	SVM Average Accuracy:9.935256e-01
 	RandomForest Average Accuracy:9.892949e-01
 	KNN Average Accuracy:9.838462e-01
 
 Original nci64 data	
 	AdaBoost Average Accuracy:6.545513e-01
 	AdaBoost Average Accuracy:8.540385e-01(tree)
-	SVM Average Accuracy:0
+	SVM Average Accuracy:9.400641e-01
 	RandomForest Average Accuracy:9.780128e-01
 	KNN Average Accuracy:9.304487e-01
 
