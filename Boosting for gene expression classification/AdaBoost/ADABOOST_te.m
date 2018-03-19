@@ -50,13 +50,44 @@ function [L,hits] = ADABOOST_te(adaboost_model,te_func_handle,test_set,true_labe
 
 hypothesis_n = length(adaboost_model.weights);
 sample_n = size(test_set,1);
-class_n = length(unique(true_labels));
-temp_L = zeros(sample_n,class_n,hypothesis_n);   % likelihoods for each weak classifier
+% class_n = length(unique(true_labels));
+class_n=4;
+temp_L = zeros(sample_n,hypothesis_n);   % likelihoods for each weak classifier
 
 % for each weak classifier, likelihoods of test samples are collected
+sprintf('every model error');
 for i=1:hypothesis_n
-    [temp_L(:,:,i),hits,error_rate] = te_func_handle(adaboost_model.parameters{i},test_set,ones(sample_n,1),true_labels);
-    temp_L(:,:,i) = temp_L(:,:,i)*adaboost_model.weights(i);
+    [temp_L(:,i),hits,error_rate] = te_func_handle(adaboost_model.parameters{i},test_set,true_labels);
+%     error_rate
+%     temp_L(:,i) = temp_L(:,i)*adaboost_model.weights(i);
 end
-L = sum(temp_L,3);
-hits = sum(likelihood2class(L)==true_labels);
+% L = sum(temp_L,2);
+% L=round(L);
+
+%查看测试样本在各个分类器错分情况
+sprintf('*****错分情况********')
+for i=1:hypothesis_n
+    disp([num2str(i),' 分类器错分情况：'])
+    for j=1:sample_n
+        if temp_L(j,i)~=true_labels(j)
+            str=[num2str(j) ' class label:' num2str(true_labels(j)) ];
+            disp(str);
+        end
+    end
+end
+sprintf('*****错分情况********')
+%投票法决定样本属于哪一类
+for i=1:sample_n
+    p=zeros(1,class_n);
+    for j=1:hypothesis_n
+        p(temp_L(i,j))=p(temp_L(i,j))+adaboost_model.weights(j);
+    end
+    index=find(p==max(p));
+    if length(index)>=2 
+        sprintf('出现多个分类器判定权重之和最大值相等的情况')
+        L(i)=index(1);
+    else
+        L(i)=index;
+    end   
+end
+hits = sum(L'==true_labels);

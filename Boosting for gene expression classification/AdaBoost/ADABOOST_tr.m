@@ -70,7 +70,7 @@ samples_weight = ones(sample_n,1)/sample_n;
 
 for turn=1:no_of_hypothesis
 %     model=tr_func_handle(train_set,samples_weight,labels);
-    [model,error_rate,L]=tr_func_handle(train_set,train_weight,train_labels);
+    [model,error_rate,L]=tr_func_handle(train_set,samples_weight,labels);
     adaboost_model.parameters{turn} =model;
 %     [L,hits,error_rate]=te_func_handle(adaboost_model.parameters{turn},train_set,samples_weight,labels);
     if(error_rate==1)
@@ -79,13 +79,19 @@ for turn=1:no_of_hypothesis
         error_rate=eps;
     end
     
+    alpha=1/2*log((1-error_rate)/error_rate);
     % The weight of the turn-th weak classifier
-    adaboost_model.weights(turn) = log10((1-error_rate)/error_rate);
-    C=likelihood2class(L);
-    t_labeled=(C==labels);  % true labeled samples
+%     adaboost_model.weights(turn) = log10((1-error_rate)/error_rate);
+    adaboost_model.weights(turn) = alpha;
+%     C=likelihood2class(L);
+    t_labeled=(L==labels);  % true labeled samples
+    
+%通过KNN检测样本是否为噪声，train_set为训练样本
+    [isNoise]=detectNosieWithKNN(train_set,5);
     
     % Importance of the true classified samples is decreased for the next weak classifier
-    samples_weight(t_labeled) = samples_weight(t_labeled)*((error_rate)/(1-error_rate));
+    samples_weight(t_labeled) = samples_weight(t_labeled)*exp(-alpha);%判断正确的样本
+    samples_weight(~t_labeled) = samples_weight(~t_labeled)*exp(alpha);%判断错误的样本
     
     % Normalization
     samples_weight = samples_weight/sum(samples_weight);

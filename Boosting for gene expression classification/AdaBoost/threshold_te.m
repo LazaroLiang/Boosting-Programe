@@ -1,4 +1,4 @@
-function [L,hits,error_rate] = threshold_te(model,test_set,sample_weights,true_labels)
+function [L,hits,error_rate] = threshold_te(model,test_set,true_labels)
 %
 % TESTING THRESHOLD CLASSIFIER
 %
@@ -29,16 +29,16 @@ function [L,hits,error_rate] = threshold_te(model,test_set,sample_weights,true_l
 % version: 1.0
 % date: 21/05/2007
 
-feat = test_set(:,model.dim);
-if(strcmp(model.pos_neg,'pos'))
-    ind = (feat>model.min_error_thr)+1;
-else
-    ind = (feat<model.min_error_thr)+1;
-end
+%KNN predict result
+% result = predict(model,test_set);
+result = svmclassify(model,test_set);
 
-hits = sum(ind==true_labels);
-error_rate = sum(sample_weights(ind~=true_labels));
-
-L = zeros(length(feat),2);
-L(ind==1,1) = 1;
-L(ind==2,2) = 1;
+% true_labels
+% size(result)
+% size(true_labels)
+hits = sum(result==true_labels);
+error_rate =sum(result ~= true_labels) / length(true_labels);
+L=result;
+% L = zeros(length(feat),2);
+% L(ind==1,1) = 1;
+% L(ind==2,2) = 1;

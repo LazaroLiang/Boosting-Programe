@@ -3,7 +3,7 @@ clear;
 clc;
 
 % load .\data\original_data\lymphoma.mat
- load .\data\original_data\lymphoma.mat
+ load .\data\original_data\colon.mat
 data=Sample';
 [m,n]=size(data);
 classNum=numel(unique(data(:,end)));    %class number
