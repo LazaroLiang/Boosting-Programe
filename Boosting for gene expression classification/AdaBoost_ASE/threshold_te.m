@@ -31,14 +31,13 @@ function [L,hits,error_rate] = threshold_te(model,test_set,true_labels,model_nam
 
 %KNN predict result
 % model_name
-if (model_name=='dt')% || (model_name=='dt')
-    result = predict(model,test_set);
-else
-    result = svmclassify(model,test_set);
-end
-
+% if (model_name=='dt')% || (model_name=='dt')
+%     result = predict(model,test_set);
+% else
+%     result = svmclassify(model,test_set);
+% end
+result=SAEPredict(model,test_set);
 % 
-
 % true_labels
 % size(result)
 % size(true_labels)

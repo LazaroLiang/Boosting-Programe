@@ -1,11 +1,6 @@
 clear;clc;
-load .\data\original_data\colon.mat
+load .\data\original_data\prostate.mat
 data=Sample';
-% dataOriginal=Sample';
-% filtLableData=dataOriginal(:,1:end-1);
-% [pc,score,latent,tsquare] = pca(filtLableData);
-% data=score(:,1:60);
-% data=[data dataOriginal(:,end)];
 % clear;clc;
 % load .\data\original_data\pca_colon.mat
 % Sample=rot90(pdata);
@@ -19,14 +14,16 @@ data=Sample';
 
 [m,n]=size(data);
 errorCountRecord=zeros(1,m);
-weak_learner_n=15;
+weak_learner_n=5;
 crossK=5;
-iterMax=2;
+iterMax=5;
 sum_error=0;
 sum1_error=0;
 sum_knn=0;
+RightRate=[];
 for k=1:iterMax
 indices = crossvalind('Kfold', m, crossK);
+KRight = [];
 for i = 1:crossK %
         test1 = (indices == i);
         train = ~test1;
@@ -77,13 +74,21 @@ for i = 1:crossK %
         
 %         knn=fitcknn(trainX,trainY);%,'NumNeighbors',5
 %         resultKNN = predict(knn,testX);
-%         model=svmtrain(trainX,trainY);
-%         resultKNN = svmclassify(model,testX);
-        
-        model=fitctree(trainX,trainY);
-        resultKNN=predict(model,testX);
-        
+        model=svmtrain(trainX,trainY);
+        resultKNN = svmclassify(model,testX);
         result=resultKNN~=testY;
+        AccuracyRate = sum(resultKNN == testY) / length(testY);
+        sum_knn=sum_knn+AccuracyRate;
+%         model=fitctree(trainX,trainY);
+%         resultKNN=predict(model,testX);
+%         
+%         result=resultKNN~=testY;
+        
+        nn=SAETrain(trainX,trainY);
+%         [er, bad] = SAETest(nn, testX, test_label);
+        [er, bad] = SAETest(nn, testX, testY);
+        KRight = [KRight 1-er];
+         
 %         for t=1:length(result)
 %             if result(t) ~= 0
 %                  OriginalIndex=-1;
@@ -98,17 +103,19 @@ for i = 1:crossK %
 %                 disp([num2str(t) ' ''s true label(KNN) is ' num2str(testY(t))]);
 %             end
 %         end
-        AccuracyRate = sum(resultKNN == testY) / length(testY);
-        sum_knn=sum_knn+AccuracyRate;
+%         AccuracyRate = sum(resultKNN == testY) / length(testY);
+%         sum_knn=sum_knn+AccuracyRate;
 %         result = KNN(trainX,trainY,testX,testY);
 %         sumKNNIter=sumKNNIter+result;
 end
 tr_error
  te_error
- rate
+ RightRate = [RightRate mean(KRight)];
 end
 
 sum_error/(crossK*iterMax)
-sum1_error/(crossK*iterMax)
+% sum1_error/(crossK*iterMax)
 1-(sum_knn/(crossK*iterMax))
+MeanRight = mean(RightRate);
+1-MeanRight
 % mean(te_error)

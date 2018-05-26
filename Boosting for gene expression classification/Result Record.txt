@@ -3,18 +3,104 @@ Original colon data
 	SVM Average Accuracy:8.360897e-01
 	RandomForest Average Accuracy:8.086538e-01
 	KNN Average Accuracy:8.039744e-01
+（20 iterators 20 learns）
+ans =
+
+    0.1704		//SAE_AdaBoost
+
+
+ans =
+
+    0.1810		//SVM
+
+
+ans =
+
+    0.3103		//SAE
+	
+	
+ans =
+
+    0.1693
+
+
+ans =
+
+    0.3515
+
+
+ans =
+
+    0.2556
 	
 Original prostate data	
 	AdaBoost Average Accuracy:8.499286e-01
 	SVM Average Accuracy:9.181905e-01
 	RandomForest Average Accuracy:9.058571e-01
 	KNN Average Accuracy:7.557381e-01
+ans =
+
+    0.1534
+
+
+ans =
+
+    0.5108
+
+
+ans =
+
+    0.2335
 	
+
+ans =
+
+    0.1607
+
+
+ans =
+
+    0.2537
+
+
+ans =
+
+    0.2514
+	
+	
+ans =
+
+    0.4773
+
+
+ans =
+
+    0.0888
+
+
+ans =
+
+    0.4640
+
+
 Original lymphoma data
 	AdaBoost Average Accuracy:9.645513e-01
 	SVM Average Accuracy:9.935256e-01
 	RandomForest Average Accuracy:9.892949e-01
 	KNN Average Accuracy:9.838462e-01
+ans =
+
+    0.0501
+
+
+ans =
+
+    0.0159
+
+
+ans =
+
+    0.1054
 
 Original nci64 data	
 	AdaBoost Average Accuracy:6.545513e-01

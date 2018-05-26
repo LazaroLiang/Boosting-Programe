@@ -1,15 +1,15 @@
 clear;clc;
-load .\data\original_data\colon.mat
-data=Sample';
-% dataOriginal=Sample';
-% filtLableData=dataOriginal(:,1:end-1);
-% [pc,score,latent,tsquare] = pca(filtLableData);
-% data=score(:,1:60);
-% data=[data dataOriginal(:,end)];
+load .\data\original_data\prostate.mat
+% data=Sample';
+dataOriginal=Sample';
+filtLableData=dataOriginal(:,1:end-1);
+[pc,score,latent,tsquare] = pca(filtLableData);
+data=score(:,1:100);
+data=[data dataOriginal(:,end)];
 % clear;clc;
 % load .\data\original_data\pca_colon.mat
 % Sample=rot90(pdata);
-% data=Sample';
+
 % id=[16,24,45,51,55,56];
 % data(id,:)=[];
 % noLableData=data(:,1:end-1);
@@ -19,7 +19,7 @@ data=Sample';
 
 [m,n]=size(data);
 errorCountRecord=zeros(1,m);
-weak_learner_n=15;
+weak_learner_n=10;
 crossK=5;
 iterMax=2;
 sum_error=0;
@@ -80,7 +80,7 @@ for i = 1:crossK %
 %         model=svmtrain(trainX,trainY);
 %         resultKNN = svmclassify(model,testX);
         
-        model=fitctree(trainX,trainY);
+        model=fitcknn(trainX,trainY);
         resultKNN=predict(model,testX);
         
         result=resultKNN~=testY;

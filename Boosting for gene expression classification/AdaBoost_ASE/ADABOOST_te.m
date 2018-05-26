@@ -1,4 +1,4 @@
-function [L,hits,hitsAnother] = ADABOOST_te(adaboost_model,te_func_handle,test_set,true_labels)
+function [L,hits,hitsAnother] = ADABOOST_te(adaboost_model,te_func_handle,test_set,true_labels,class_n)
 %
 % ADABOOST TESTING
 %
@@ -51,7 +51,7 @@ function [L,hits,hitsAnother] = ADABOOST_te(adaboost_model,te_func_handle,test_s
 hypothesis_n = length(adaboost_model.weights);
 sample_n = size(test_set,1);
 % class_n = length(unique(true_labels));
-class_n=4;
+% class_n=4;
 temp_L = zeros(sample_n,hypothesis_n);   % likelihoods for each weak classifier
 
 % for each weak classifier, likelihoods of test samples are collected
@@ -85,7 +85,7 @@ for i=1:sample_n
     p1=zeros(1,class_n);
     for j=1:hypothesis_n
         p(temp_L(i,j))=p(temp_L(i,j))+adaboost_model.weights(j);
-%         p1(temp_L(i,j))=p1(temp_L(i,j))+probability(i,j);%动态分配权重
+        p1(temp_L(i,j))=p1(temp_L(i,j))+probability(i,j);%动态分配权重
     end
     index=find(p==max(p));
 %     index1=find(p1==max(p1));
@@ -100,4 +100,4 @@ for i=1:sample_n
 end
 hits = sum(L'==true_labels);
 % hitsAnother=sum(L1'==true_labels);
-hitsAnother=hits;
+hitsAnother=sum(L'==true_labels);

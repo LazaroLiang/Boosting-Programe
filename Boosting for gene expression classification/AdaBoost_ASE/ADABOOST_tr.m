@@ -67,6 +67,7 @@ adaboost_model = struct('weights',zeros(1,no_of_hypothesis),'parameters',[],'tra
 
 sample_n = size(train_set,1);
 samples_weight = ones(sample_n,1)/sample_n;
+
 for turn=1:no_of_hypothesis
 %     model=tr_func_handle(train_set,samples_weight,labels);
     [model,error_rate,L,filtSample,filtLables,learn_name]=tr_func_handle(train_set,samples_weight,labels);
@@ -74,7 +75,6 @@ for turn=1:no_of_hypothesis
     adaboost_model.train_set{turn}=filtSample;
     adaboost_model.train_lable{turn}=filtLables;
     adaboost_model.model_name{turn}=learn_name;
-   
 %     [L,hits,error_rate]=te_func_handle(adaboost_model.parameters{turn},train_set,samples_weight,labels);
     if(error_rate==1)
         error_rate=1-eps;

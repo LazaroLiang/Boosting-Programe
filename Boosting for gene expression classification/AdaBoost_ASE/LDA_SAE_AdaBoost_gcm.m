@@ -1,32 +1,38 @@
 clear;clc;
-load .\data\original_data\colon.mat
-data=Sample';
-% dataOriginal=Sample';
+load .\data\original_data\nci64.mat
+X =Sample(1:end-1 , :);
+Y = Sample(end , :);
+ 
+ %%自己加的,用来处理大数据 
+    T = X';
+    Mean_Image = mean(T , 2);
+    T = bsxfun(@minus , T ,Mean_Image);
+    T = T * T'/ (size(unique(Y),2)-1) ;
+    X = T';
+ %%到这里为止feature(:,2:end)
+    
+[Z,W]=FDA(X, Y');
+data = [Z' Y'];
+dataOriginal=Sample';
 % filtLableData=dataOriginal(:,1:end-1);
+% waitReductionData=[dataOriginal(:,end) filtLableData];
+% [reductionedData,mapping]=compute_mapping(filtLableData,'PCA',85);
 % [pc,score,latent,tsquare] = pca(filtLableData);
-% data=score(:,1:60);
-% data=[data dataOriginal(:,end)];
-% clear;clc;
-% load .\data\original_data\pca_colon.mat
-% Sample=rot90(pdata);
-% data=Sample';
-% id=[16,24,45,51,55,56];
-% data(id,:)=[];
-% noLableData=data(:,1:end-1);
-%  [coeff, score, latent, tsquared, explained] = pca(noLableData);
-%  feature_after_PCA=score(:,1:15);
-%  data=[feature_after_PCA,data(:,end)];
-
+% data=score(:,1:85);
+% data=[reductionedData dataOriginal(:,end)];
 [m,n]=size(data);
 errorCountRecord=zeros(1,m);
-weak_learner_n=15;
+weak_learner_n=20;
 crossK=5;
-iterMax=2;
+iterMax=20;
 sum_error=0;
 sum1_error=0;
 sum_knn=0;
+RightRate=[];
+class_num=length(unique(dataOriginal(:,end)));
 for k=1:iterMax
 indices = crossvalind('Kfold', m, crossK);
+KRight = [];
 for i = 1:crossK %
         test1 = (indices == i);
         train = ~test1;
@@ -43,7 +49,7 @@ for i = 1:crossK %
         % 训练样本测试
 %         sprintf('\n')
 %         sprintf('*****第%d折训练样本错分情况开始********',i)
-        [L_tr,hits_tr] = ADABOOST_te(adaboost_model,@threshold_te,trainX,trainY);
+        [L_tr,hits_tr] = ADABOOST_te(adaboost_model,@threshold_te,trainX,trainY,class_num);
         tr_error(i) = (tr_n-hits_tr)/tr_n;
 %         sprintf('*****第%d折训练样本错分情况结束********',i)
 %         sprintf('\n')
@@ -51,7 +57,7 @@ for i = 1:crossK %
 %         sprintf('\n')
 %         sprintf('*****第%d折测试样本错分情况开始********',i)
         % 测试样本测试
-        [L_te,hits_te,another_hits] = ADABOOST_te(adaboost_model,@threshold_te,testX,testY);
+        [L_te,hits_te,another_hits] = ADABOOST_te(adaboost_model,@threshold_te,testX,testY,class_num);
 %         sprintf('*****第%d折测试样本错分情况结束********',i)
 %         sprintf('\n')
 %         result=L_te'~=testY;
@@ -75,15 +81,23 @@ for i = 1:crossK %
         another_error(i) = (te_n-another_hits)/te_n;
         sum1_error=sum1_error+another_error(i);
         
-%         knn=fitcknn(trainX,trainY);%,'NumNeighbors',5
-%         resultKNN = predict(knn,testX);
+        knn=fitcknn(trainX,trainY);%,'NumNeighbors',5
+        resultKNN = predict(knn,testX);
 %         model=svmtrain(trainX,trainY);
 %         resultKNN = svmclassify(model,testX);
-        
-        model=fitctree(trainX,trainY);
-        resultKNN=predict(model,testX);
-        
         result=resultKNN~=testY;
+        AccuracyRate = sum(resultKNN == testY) / length(testY);
+        sum_knn=sum_knn+AccuracyRate;
+%         model=fitctree(trainX,trainY);
+%         resultKNN=predict(model,testX);
+%         
+%         result=resultKNN~=testY;
+        
+        nn=SAETrain(trainX,trainY);
+%         [er, bad] = SAETest(nn, testX, test_label);
+        [er, bad] = SAETest(nn, testX, testY);
+        KRight = [KRight 1-er];
+         
 %         for t=1:length(result)
 %             if result(t) ~= 0
 %                  OriginalIndex=-1;
@@ -98,17 +112,19 @@ for i = 1:crossK %
 %                 disp([num2str(t) ' ''s true label(KNN) is ' num2str(testY(t))]);
 %             end
 %         end
-        AccuracyRate = sum(resultKNN == testY) / length(testY);
-        sum_knn=sum_knn+AccuracyRate;
+%         AccuracyRate = sum(resultKNN == testY) / length(testY);
+%         sum_knn=sum_knn+AccuracyRate;
 %         result = KNN(trainX,trainY,testX,testY);
 %         sumKNNIter=sumKNNIter+result;
 end
 tr_error
  te_error
- rate
+ RightRate = [RightRate mean(KRight)];
 end
 
 sum_error/(crossK*iterMax)
-sum1_error/(crossK*iterMax)
+% sum1_error/(crossK*iterMax)
 1-(sum_knn/(crossK*iterMax))
+MeanRight = mean(RightRate);
+1-MeanRight
 % mean(te_error)

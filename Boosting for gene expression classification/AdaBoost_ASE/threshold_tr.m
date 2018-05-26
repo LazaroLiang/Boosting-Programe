@@ -24,8 +24,7 @@ function [model,error_rate,result,filtSample,filtLables,model_name] = threshold_
 % version: 1.0
 % date: 21/05/2007
 
-%filter sample
-[filtSample,filtLables]=FiltEX(train_set,labels,sample_weights);
+
 
 %KNN model
 % model=fitcknn(filtSample,filtLables);
@@ -40,15 +39,39 @@ function [model,error_rate,result,filtSample,filtLables,model_name] = threshold_
 
 % dt_model=fitctree(filtSample,filtLables);
 % dt_result=predict(dt_model,train_set);
-
-dt_model=fitctree(filtSample,filtLables);
-dt_result=predict(dt_model,train_set);
 % model
 % result = 
 % knn_error_rate=sum(knn_result ~= labels) / length(labels);
 % svm_error_rate=sum(svm_result ~= labels) / length(labels);
 
-dt_error_rate=sum(dt_result ~= labels) / length(labels);
+% dt_error_rate=sum(dt_result ~= labels) / length(labels);
+%filter sample
+error_rate=1;
+times=0;
+while error_rate>0.5
+%         disp('error too max')
+        [filtSample,filtLables]=FiltEX(train_set,labels,sample_weights);
+        while length(unique(filtLables))<length(unique(labels))
+            disp('filt data set class number is small then all classes')
+            [filtSample,filtLables]=FiltEX(train_set,labels,sample_weights);
+        end
+        
+%         if(length(unique(filtLables))<=2)
+%             disp(['class number is smaller then all calsses:' ]);
+%             disp(unique(filtLables));
+%         end
+        sae_model=SAETrain(filtSample,filtLables);
+        sae_result=SAEPredict(sae_model,train_set);
+        sae_error_rate=sum(sae_result~=labels)/ length(labels);
+        error_rate = sae_error_rate;
+        model=sae_model;
+        result =sae_result;
+        model_name='sae';
+        times=times+1;
+end
+if times>=2
+    disp(['error too max times:' num2str(times)])
+end
 % if knn_error_rate<svm_error_rate
 %     error_rate = knn_error_rate;
 %     model=knn_model;
@@ -60,12 +83,12 @@ dt_error_rate=sum(dt_result ~= labels) / length(labels);
 %     model_name='svm';
 %     result =svm_result;
 % end
-error_rate = dt_error_rate;
-    model=dt_model;
-    result =dt_result;
-    model_name='dt';
-    if error_rate>0.5
-        disp('error too max')
-    end
+% error_rate = dt_error_rate;
+%     model=dt_model;
+%     result =dt_result;
+%     model_name='dt';
+%     if error_rate>0.4
+%         disp('error too max')
+%     end
 
 % [isNoise]=detectNosieWithKNN(filtSample,filtLables,5);
