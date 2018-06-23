@@ -2,7 +2,8 @@ function [FiltSamples,FiltLables] = FiltEX(samples,lables,weights)
 
 samplesNum=length(weights);
 minRate=inf;
-for iter=1:20
+flag=-1; %判断是否产生了符合要求的样本
+for iter=1:50
     frequency=zeros(1,samplesNum);
     tempSamples=[];
     tempLables=[];
@@ -18,10 +19,15 @@ for iter=1:20
     end
     rate=frequency/sum(frequency);
     sumRate=sum((rate'-weights).^2);
-    if sumRate<minRate
+    if sumRate<minRate && length(unique(tempLables)) == length(unique(lables))
         minRate=sumRate;
         FiltSamples=tempSamples;
         FiltLables=tempLables;
+        flag=1;
     end
+end
+if flag==-1
+    FiltSamples=samples;
+    FiltLables=lables;
 end
 end

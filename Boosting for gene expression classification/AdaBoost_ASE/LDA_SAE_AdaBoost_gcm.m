@@ -1,5 +1,5 @@
 clear;clc;
-load .\data\original_data\nci64.mat
+load .\data\original_data\gcm.mat
 X =Sample(1:end-1 , :);
 Y = Sample(end , :);
  

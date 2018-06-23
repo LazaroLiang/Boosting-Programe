@@ -16,7 +16,7 @@ switch diversityMethod
         sumCFD=0;
         for i=1:n   %对每个分类器
             numFialedByNModel=length(find(tempResult==i));
-            numFialedByAtLeastOneModel=length(tempResult)-length(find(tempResult~=0));
+            numFialedByAtLeastOneModel=length(find(tempResult~=n));
             sumCFD=sumCFD+((n-i)/(n-1))*numFialedByNModel/numFialedByAtLeastOneModel;
         end
         diversity=sumCFD;

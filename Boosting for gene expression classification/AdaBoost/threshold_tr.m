@@ -41,7 +41,7 @@ function [model,error_rate,result,filtSample,filtLables,model_name] = threshold_
 % dt_model=fitctree(filtSample,filtLables);
 % dt_result=predict(dt_model,train_set);
 
-dt_model=fitctree(filtSample,filtLables);
+dt_model=fitcnb(train_set,labels,'Weights' ,sample_weights);
 dt_result=predict(dt_model,train_set);
 % model
 % result = 

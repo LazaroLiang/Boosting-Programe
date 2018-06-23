@@ -52,30 +52,47 @@ else
     dt_result=predict(dt_model,train_set);
     dt_temp_result=[preJudgeResult (dt_result==labels)];
     dt_error_rate=sum(dt_result ~= labels) / length(labels);
-%     disp('dt diversty:')
-%     dt_diversty=getDiversity(dt_temp_result,'CFD');
-    dt_diversty=getDiversity(dt_temp_result,'Entropy');
+    dt_diversty=getDiversity(dt_temp_result,'CFD');
+%     dt_diversty=getDiversity(dt_temp_result,'Entropy');
     
+
+    %% 对于贝叶斯分类器，检查各个类样本方差是否为0，如果为0，则贝叶斯分类器分类时会报错
+    if judgeNBIleague(filtSample,filtLables)==0
+        filtSample=train_set;
+        filtLables=labels;
+    end
     nb_model=fitcnb(filtSample,filtLables);
     nb_result=predict(nb_model,train_set);
     nb_temp_result=[preJudgeResult (nb_result==labels)];
     nb_error_rate=sum(nb_result ~= labels) / length(labels);
-%     nb_diversty=getDiversity(nb_temp_result,'CFD');
+    nb_diversty=getDiversity(nb_temp_result,'CFD');
     nb_diversty=getDiversity(nb_temp_result,'Entropy');
   % obj = ClassificationDiscriminant.fit(train_data, train_label);  
 % predict_label   =       predict(obj, test_data);
 % knn_model=fitcdiscr(filtSample,filtLables);
-    knn_model=fitcknn(filtSample,filtLables);%,'NumNeighbors',5
+    knn_model=fitcknn(filtSample,filtLables,'NumNeighbors',3);%,'NumNeighbors',5
     knn_result = predict(knn_model,train_set);
     knn_temp_result=[preJudgeResult (knn_result==labels)];
     knn_error_rate=sum(knn_result ~= labels) / length(labels);    
-%     knn_diversty=getDiversity(knn_temp_result,'CFD');
-    knn_diversty=getDiversity(knn_temp_result,'Entropy');
+    knn_diversty=getDiversity(knn_temp_result,'CFD');
+%     knn_diversty=getDiversity(knn_temp_result,'Entropy');
     
+%     svm_model=svmtrain(filtSample,filtLables);
+%     svm_result = svmclassify(svm_model,train_set);
+%     svm_temp_result=[preJudgeResult (svm_result==labels)];
+%     svm_error_rate=sum(svm_result ~= labels) / length(labels); 
+%     svm_diversty=getDiversity(svm_temp_result,'CFD');
     
-    [~,maxIndex]=max([dt_diversty/dt_error_rate,nb_diversty/nb_error_rate,knn_diversty/knn_error_rate]);
-%     maxIndex=randperm(3,1);
+%     [~,maxIndex]=max([dt_diversty/dt_error_rate,nb_diversty/nb_error_rate,knn_diversty/knn_error_rate,svm_diversty/svm_error_rate]);
+%     maxIndex=randperm(4,1);
 %     maxIndex=3;
+%     [~,maxIndex]=min([dt_error_rate,nb_error_rate,knn_error_rate]);
+%     [~,maxIndex]=max([dt_diversty,nb_diversty,knn_diversty]);
+    [~,maxIndex]=max([dt_diversty/dt_error_rate,nb_diversty/nb_error_rate]);
+%     if maxIndex==2 || maxIndex==4
+%         maxIndex=1;
+%     end
+%     maxIndex=1;
     switch maxIndex
         case 1
             judgeResult=(dt_result==labels);
@@ -84,6 +101,8 @@ else
             result =dt_result;
             model_name='dt';
         case 2
+%             dt_diversty
+%             knn_diversty
             judgeResult=(nb_result==labels);
             error_rate=sum(nb_result ~= labels) / length(labels);
             model=nb_model;
@@ -95,6 +114,12 @@ else
             model=knn_model;
             result =knn_result;
             model_name='knn';
+%         case 4
+%             judgeResult=(svm_result==labels);
+%             error_rate=sum(svm_result ~= labels) / length(labels);
+%             model=svm_model;
+%             result =svm_result;
+%             model_name='svm';
     end
     % model
     % result =

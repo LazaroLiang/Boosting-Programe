@@ -1,16 +1,18 @@
 clear;clc;
 load .\data\original_data\nci64.mat
+
 dataOriginal=Sample';
 filtLableData=dataOriginal(:,1:end-1);
 [pc,score,latent,tsquare] = pca(filtLableData);
 data=score(:,1:60);
 data=[data dataOriginal(:,end)];
 % data=Sample';
+
 [m,n]=size(data);
 errorCountRecord=zeros(1,m);
-weak_learner_n=50;
+weak_learner_n=10;
 crossK=5;
-iterMax=20;
+iterMax=2;
 sum_error=0;
 sum1_error=0;
 sum_knn=0;

@@ -50,8 +50,8 @@ function [L,hits,hitsAnother] = ADABOOST_te(adaboost_model,te_func_handle,test_s
 
 hypothesis_n = length(adaboost_model.weights);
 sample_n = size(test_set,1);
-% class_n = length(unique(true_labels));
-class_n=4;
+% class_n = length(unique(true_labels))
+class_n=14;
 temp_L = zeros(sample_n,hypothesis_n);   % likelihoods for each weak classifier
 
 % for each weak classifier, likelihoods of test samples are collected

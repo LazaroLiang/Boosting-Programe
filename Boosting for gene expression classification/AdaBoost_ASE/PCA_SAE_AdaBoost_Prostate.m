@@ -66,10 +66,10 @@ for i = 1:crossK %
         another_error(i) = (te_n-another_hits)/te_n;
         sum1_error=sum1_error+another_error(i);
         
-        knn=fitcknn(trainX,trainY);%,'NumNeighbors',5
-        resultKNN = predict(knn,testX);
-%         model=svmtrain(trainX,trainY);
-%         resultKNN = svmclassify(model,testX);
+%         knn=fitcknn(trainX,trainY);%,'NumNeighbors',5
+%         resultKNN = predict(knn,testX);
+        model=svmtrain(trainX,trainY);
+        resultKNN = svmclassify(model,testX);
         result=resultKNN~=testY;
         AccuracyRate = sum(resultKNN == testY) / length(testY);
         sum_knn=sum_knn+AccuracyRate;

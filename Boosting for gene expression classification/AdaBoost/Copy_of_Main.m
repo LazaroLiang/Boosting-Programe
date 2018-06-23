@@ -1,11 +1,11 @@
 clear;clc;
 load .\data\original_data\colon.mat
-data=Sample';
-% dataOriginal=Sample';
-% filtLableData=dataOriginal(:,1:end-1);
-% [pc,score,latent,tsquare] = pca(filtLableData);
-% data=score(:,1:60);
-% data=[data dataOriginal(:,end)];
+% data=Sample';
+dataOriginal=Sample';
+filtLableData=dataOriginal(:,1:end-1);
+[pc,score,latent,tsquare] = pca(filtLableData);
+data=score(:,1:60);
+data=[data dataOriginal(:,end)];
 % clear;clc;
 % load .\data\original_data\pca_colon.mat
 % Sample=rot90(pdata);
@@ -80,7 +80,7 @@ for i = 1:crossK %
 %         model=svmtrain(trainX,trainY);
 %         resultKNN = svmclassify(model,testX);
         
-        model=fitctree(trainX,trainY);
+        model=fitcnb(trainX,trainY);
         resultKNN=predict(model,testX);
         
         result=resultKNN~=testY;

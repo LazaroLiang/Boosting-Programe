@@ -1,10 +1,28 @@
 clear;clc;
 load .\data\original_data\colon.mat
+
+% X =Sample(1:end-1 , :);
+% Y = Sample(end , :);
+%  
+%  %%自己加的,用来处理大数据 
+%     T = X';
+%     Mean_Image = mean(T , 2);
+%     T = bsxfun(@minus , T ,Mean_Image);
+%     T = T * T'/ (size(unique(Y),2)-1) ;
+%     X = T';
+%  %%到这里为止feature(:,2:end)
+%     
+% [Z,W]=FDA(X, Y');
+% data = [Z' Y'];
+% dataOriginal=Sample';
+
 dataOriginal=Sample';
 filtLableData=dataOriginal(:,1:end-1);
 [pc,score,latent,tsquare] = pca(filtLableData);
 data=score(:,1:60);
 data=[data dataOriginal(:,end)];
+
+
 [m,n]=size(data);
 errorCountRecord=zeros(1,m);
 weak_learner_n=20;
@@ -66,10 +84,10 @@ for i = 1:crossK %
         another_error(i) = (te_n-another_hits)/te_n;
         sum1_error=sum1_error+another_error(i);
         
-        knn=fitcknn(trainX,trainY);%,'NumNeighbors',5
-        resultKNN = predict(knn,testX);
-%         model=svmtrain(trainX,trainY);
-%         resultKNN = svmclassify(model,testX);
+%         knn=fitcknn(trainX,trainY);%,'NumNeighbors',5
+%         resultKNN = predict(knn,testX);
+        model=svmtrain(trainX,trainY);
+        resultKNN = svmclassify(model,testX);
         result=resultKNN~=testY;
         AccuracyRate = sum(resultKNN == testY) / length(testY);
         sum_knn=sum_knn+AccuracyRate;

@@ -48,7 +48,7 @@ function [model,error_rate,result,filtSample,filtLables,model_name] = threshold_
 %filter sample
 error_rate=1;
 times=0;
-while error_rate>0.5
+while error_rate>0.6
 %         disp('error too max')
         [filtSample,filtLables]=FiltEX(train_set,labels,sample_weights);
         while length(unique(filtLables))<length(unique(labels))
