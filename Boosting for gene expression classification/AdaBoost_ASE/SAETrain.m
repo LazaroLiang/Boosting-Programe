@@ -8,6 +8,9 @@ classNums=length(unique(train_label));
 setSize=length(train_label);
 train_label= train_label(:,1);
 
+%% 处理当交叉验证得到的训练集种类数m小于总种类数n时，需要将lable值由1-n，转换为1-m,否则sae训练过程中会报错
+
+
 train_label = [train_label(:,:) zeros(setSize,classNums-1)];
 for t=1:setSize
     l=train_label(t,1);
@@ -21,8 +24,9 @@ for t=1:setSize
 %     else if(train_label(t,1)==3)
 %         train_label(t,1)=0;
 %         train_label(t,3)=1;
-%     end
+%     end 
 end
+train_label(:,all(train_label==0,1))= [];
 %SAE
         sae = saesetup([n-1 64-1]);
         sae.ae{1}.activation_function       ='sigm';
@@ -40,6 +44,9 @@ end
         sae = saetrain(sae, train_set, opts);
 
         % Use the SDAE to initialize a FFNN
+        disp('******************')
+        classNums
+        disp('******************')
         nn = nnsetup([n-1 64-1 classNums]);
         nn.activation_function              = 'sigm';
         nn.learningRate                     = 0.5;

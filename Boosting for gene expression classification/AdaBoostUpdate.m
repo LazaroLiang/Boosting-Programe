@@ -3,8 +3,17 @@ clear;
 clc;
 
 % load .\data\original_data\lymphoma.mat
- load .\data\original_data\nci64.mat
-data=Sample';
+%  load .\data\original_data\nci64.mat
+% data=Sample';
+
+load .\data\original_data\Leukemia2.mat
+data(:,1)=data(:,1)+1;
+data=rot90(data);
+noLableData=data(:,1:end-1);
+ [coeff, score, latent, tsquared, explained] = pca(noLableData);
+ feature_after_PCA=score(:,1:60);
+ data=[feature_after_PCA,data(:,end)];
+
 [m,n]=size(data);
 classNum=numel(unique(data(:,end)));    %class number
 iterators=20;
@@ -26,9 +35,9 @@ for j=1:iterators
         testX=testData(:,1:end-1);
         testY=testData(:,end);
         if classNum==2
-             ada = fitensemble(trainX,trainY,'AdaBoostM1',200,'Discriminant');
+             ada = fitensemble(trainX,trainY,'AdaBoostM1',20,'Discriminant');
         else
-            ada = fitensemble(trainX,trainY,'AdaBoostM2',200,'tree');
+            ada = fitensemble(trainX,trainY,'AdaBoostM2',20,'tree');
         end                 
         result = predict(ada,testX);
         AccuracyRate = sum(result == testY) / length(testY);        
@@ -44,7 +53,7 @@ fprintf('AdaBoost Average Accuracy:%d\n',sumAdaBoostEveryIter/(iterators*crossK)
 
 
 % result = DecisionTree(trainX,trainY,testX,testY);   %¾ö²ßÊ÷
-% result = NeuroNetwork(trainX,trainY,testX,testY);   %Éñ¾­�?øÂç
+% result = NeuroNetwork(trainX,trainY,testX,testY);   %Éñ¾­?øÂç
 % result = SVMDecision(trainX,trainY,testX,testY);    %SVM
 % result = BayesNaive(trainX,trainY,testX,testY);     %Naive Bayes
 % result = AdaBoost(trainX,trainY,testX,testY);       %AdaBoost

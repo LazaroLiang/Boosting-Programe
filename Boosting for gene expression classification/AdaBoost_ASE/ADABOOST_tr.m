@@ -70,6 +70,9 @@ samples_weight = ones(sample_n,1)/sample_n;
 
 for turn=1:no_of_hypothesis
 %     model=tr_func_handle(train_set,samples_weight,labels);
+%     disp('***************************')
+%     size(train_set)
+%     size(labels)
     [model,error_rate,L,filtSample,filtLables,learn_name]=tr_func_handle(train_set,samples_weight,labels);
     adaboost_model.parameters{turn} =model;
     adaboost_model.train_set{turn}=filtSample;

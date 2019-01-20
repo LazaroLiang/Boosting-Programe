@@ -1,4 +1,4 @@
-function result = NeuroNetwork(trainX,trainY,testX,testY)
+function rate = NeuroNetwork(trainX,trainY,testX,testY)
 tic;
 spread = 0.1;
 %建立并训练神经网络

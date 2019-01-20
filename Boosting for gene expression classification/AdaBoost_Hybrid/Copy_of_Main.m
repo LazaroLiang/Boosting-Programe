@@ -1,44 +1,44 @@
 clear;clc;
-load .\data\original_data\gcm.mat
+load .\data\original_data\nci64.mat
 
 %% LDA 降维
-data=Sample';
-X =Sample(1:end-1 , :);
-Y = Sample(end , :);
- 
- %%自己加的,用来处理大数据 
-    T = X';
-    Mean_Image = mean(T , 2);
-    T = bsxfun(@minus , T ,Mean_Image);
-    T = T * T'/ (size(unique(Y),2)-1) ;
-    X = T';
- %%到这里为止feature(:,2:end)
-    
-[Z,W]=FDA(X, Y');
-data = [Z' Y'];
-dataOriginal=Sample';
+% data=Sample';
+% X =Sample(1:end-1 , :);
+% Y =Sample(end , :);
+%  
+%  %%自己加的,用来处理大数据 
+%     T = X';
+%     Mean_Image = mean(T , 2);
+%     T = bsxfun(@minus , T ,Mean_Image);
+%     T = T * T'/ (size(unique(Y),2)-1) ;
+%     X = T';
+%  %%到这里为止feature(:,2:end)
+%     
+% [Z,W]=FDA(X, Y');
+% data = [Z' Y'];
+% dataOriginal=Sample';
 
 %% pca降维
-% dataOriginal=Sample';
-% filtLableData=dataOriginal(:,1:end-1);
-% [pc,score,latent,tsquare] = pca(filtLableData);
-% data=score(:,1:60);
-% data=[data dataOriginal(:,end)];
+dataOriginal=Sample';
+filtLableData=dataOriginal(:,1:end-1);
+[pc,score,latent,tsquare] = pca(filtLableData);
+data=score(:,1:30);
+data=[data dataOriginal(:,end)];
 
 % clear;clc;
 % load .\data\original_data\pca_colon.mat
 % Sample=rot90(pdata);
-
-% id=[16,24,45,51,55,56];
-% data(id,:)=[];
+% 
+% % id=[16,24,45,51,55,56];
+% % data(id,:)=[];
 % noLableData=data(:,1:end-1);
 %  [coeff, score, latent, tsquared, explained] = pca(noLableData);
-%  feature_after_PCA=score(:,1:15);
+%  feature_after_PCA=score(:,1:60);
 %  data=[feature_after_PCA,data(:,end)];
 
 [m,n]=size(data);
 errorCountRecord=zeros(1,m);
-weak_learner_n=20;
+weak_learner_n=10;
 crossK=5;
 iterMax=20;
 sum_error=0;
@@ -128,13 +128,13 @@ for i = 1:crossK %
         sum_dt=sum_dt+sum(resultDT == testY) / length(testY);
         sum_nb=sum_nb+sum(resultNB == testY) / length(testY);
         
-        adaboost_model.model_name
+       adaboost_model.model_name
 %         result = KNN(trainX,trainY,testX,testY);
 %         sumKNNIter=sumKNNIter+result;
 end
 tr_error
  te_error
- rate
+ %rate
 end
 
 disp(['ensamble error rate:',num2str(sum_error/(crossK*iterMax))]);

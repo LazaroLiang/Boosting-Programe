@@ -59,7 +59,7 @@ end
 %% 迭代20次
 maxStep = 10;
 %网络构造的次数
-netMaxStep=20;
+netMaxStep=500;
 RightRate = [];
 for step=1:maxStep
     % 采用5重交叉验证

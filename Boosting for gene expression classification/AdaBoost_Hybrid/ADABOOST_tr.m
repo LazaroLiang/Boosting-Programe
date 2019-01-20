@@ -68,14 +68,16 @@ adaboost_model = struct('weights',zeros(1,no_of_hypothesis),'parameters',[],'tra
 sample_n = size(train_set,1);
 samples_weight = ones(sample_n,1)/sample_n;
 judgeResult=[];%记录每个分类器分类结果，其中，行表示每个样本，列表示分类器对应判定结果，为1表示判定正确，为0表示判定错误
+preDiversity=0;
 for turn=1:no_of_hypothesis
 %     model=tr_func_handle(train_set,samples_weight,labels);
-    [model,error_rate,L,filtSample,filtLables,learn_name,tempJudgeResult]=tr_func_handle(train_set,samples_weight,labels,judgeResult);
+    [model,error_rate,L,filtSample,filtLables,learn_name,tempJudgeResult,diversity]=tr_func_handle(train_set,samples_weight,labels,judgeResult,preDiversity);
     adaboost_model.parameters{turn} =model;
     adaboost_model.train_set{turn}=filtSample;
     adaboost_model.train_lable{turn}=filtLables;
     adaboost_model.model_name{turn}=learn_name;
      judgeResult=[judgeResult tempJudgeResult];
+     preDiversity=diversity;
 %     [L,hits,error_rate]=te_func_handle(adaboost_model.parameters{turn},train_set,samples_weight,labels);
     if(error_rate==1)
         error_rate=1-eps;

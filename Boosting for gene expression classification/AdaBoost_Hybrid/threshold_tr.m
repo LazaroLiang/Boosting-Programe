@@ -1,4 +1,4 @@
-function [model,error_rate,result,filtSample,filtLables,model_name,judgeResult] = threshold_tr(train_set, sample_weights, labels,preJudgeResult)
+function [model,error_rate,result,filtSample,filtLables,model_name,judgeResult,diversity] = threshold_tr(train_set, sample_weights, labels,preJudgeResult,preDiversity)
 %
 % TRAINING THRESHOLD CLASSIFIER
 %
@@ -47,12 +47,15 @@ if length(preJudgeResult)==0
     model=dt_model;
     result =dt_result;
     model_name='dt';
+    diversity=0;
 else
+    diversityMethod='DFM';
+    
     dt_model=fitctree(filtSample,filtLables);
     dt_result=predict(dt_model,train_set);
     dt_temp_result=[preJudgeResult (dt_result==labels)];
     dt_error_rate=sum(dt_result ~= labels) / length(labels);
-    dt_diversty=getDiversity(dt_temp_result,'CFD');
+    dt_diversty=getDiversity(dt_temp_result,diversityMethod,preDiversity);
 %     dt_diversty=getDiversity(dt_temp_result,'Entropy');
     
 
@@ -65,8 +68,7 @@ else
     nb_result=predict(nb_model,train_set);
     nb_temp_result=[preJudgeResult (nb_result==labels)];
     nb_error_rate=sum(nb_result ~= labels) / length(labels);
-    nb_diversty=getDiversity(nb_temp_result,'CFD');
-    nb_diversty=getDiversity(nb_temp_result,'Entropy');
+    nb_diversty=getDiversity(nb_temp_result,diversityMethod,preDiversity);
   % obj = ClassificationDiscriminant.fit(train_data, train_label);  
 % predict_label   =       predict(obj, test_data);
 % knn_model=fitcdiscr(filtSample,filtLables);
@@ -74,7 +76,7 @@ else
     knn_result = predict(knn_model,train_set);
     knn_temp_result=[preJudgeResult (knn_result==labels)];
     knn_error_rate=sum(knn_result ~= labels) / length(labels);    
-    knn_diversty=getDiversity(knn_temp_result,'CFD');
+    knn_diversty=getDiversity(knn_temp_result,diversityMethod,preDiversity);
 %     knn_diversty=getDiversity(knn_temp_result,'Entropy');
     
 %     svm_model=svmtrain(filtSample,filtLables);
@@ -87,8 +89,8 @@ else
 %     maxIndex=randperm(4,1);
 %     maxIndex=3;
 %     [~,maxIndex]=min([dt_error_rate,nb_error_rate,knn_error_rate]);
-%     [~,maxIndex]=max([dt_diversty,nb_diversty,knn_diversty]);
-    [~,maxIndex]=max([dt_diversty/dt_error_rate,nb_diversty/nb_error_rate]);
+    [~,maxIndex]=min([dt_diversty,nb_diversty]);%,knn_diversty
+% %     [~,maxIndex]=max([dt_diversty/dt_error_rate,nb_diversty/nb_error_rate]);
 %     if maxIndex==2 || maxIndex==4
 %         maxIndex=1;
 %     end
@@ -100,6 +102,7 @@ else
             model=dt_model;
             result =dt_result;
             model_name='dt';
+            diversity=dt_diversty;
         case 2
 %             dt_diversty
 %             knn_diversty
@@ -108,12 +111,14 @@ else
             model=nb_model;
             result =nb_result;
             model_name='nb';
+            diversity=nb_diversty;
         case 3
             judgeResult=(knn_result==labels);
             error_rate=sum(knn_result ~= labels) / length(labels);
             model=knn_model;
             result =knn_result;
             model_name='knn';
+            diversity=nb_diversty;
 %         case 4
 %             judgeResult=(svm_result==labels);
 %             error_rate=sum(svm_result ~= labels) / length(labels);

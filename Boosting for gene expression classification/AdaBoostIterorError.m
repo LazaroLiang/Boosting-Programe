@@ -31,7 +31,7 @@ label_data=data(:,end);
 % ylabel('Holdout error');
 crossK=5;
 accuracy=[];
-classfierNum=200;
+classfierNum=20;
 for j=1:1:classfierNum
     indices = crossvalind('Kfold', m, crossK);%??????????3??    
     sumAdaBoostEveryIter=0;

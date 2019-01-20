@@ -1,0 +1,84 @@
+5重交叉验证，循环迭代20次,20个分类器进行集成的结果，降维至60维
+colon
+	ensamble error rate:0.16949
+	svm error rate:0.19571
+	knn error rate:0.34917
+	sae error rate:0.25878
+	
+	ensamble error rate:0.16333
+	svm error rate:0.28468
+	knn error rate:0.35135
+	sae error rate:0.24673
+prostate
+	ensamble error rate:0.1474
+	svm error rate:0.17888
+	knn error rate:0.17131
+	sae error rate:0.24126
+	
+	ensamble error rate:0.15976
+	svm error rate:0.15331
+	knn error rate:0.17083
+	sae error rate:0.24643
+mit
+	ensamble error rate:0.081095
+	svm error rate:0.044238
+	knn error rate:0.082667
+	sae error rate:0.15543
+	
+	ensamble error rate:0.07419
+	svm error rate:0.21252
+	knn error rate:0.087714
+	sae error rate:0.17571
+nci64	
+	ensamble error rate:0.096667
+	svm error rate:0.17064
+	knn error rate:0.19987
+	sae error rate:0.15173
+gcm
+	ensamble error rate:0.42684
+	svm error rate:0.33079
+	knn error rate:0.32579
+	sae error rate:0.51684
+	
+	ensamble error rate:0.43474
+	svm error rate:0.40947
+	knn error rate:0.33316
+	sae error rate:0.51737
+lymphoma	
+	ensamble error rate:0.038974
+	svm error rate:0.060385
+	knn error rate:0.13308
+	sae error rate:0.089359
+Leukemia1
+	ensamble error rate:0.10438
+	svm error rate:0.2961
+	knn error rate:0.15048
+	sae error rate:0.2199
+Leukemia2
+	ensamble error rate:0.10833
+	svm error rate:0.18233
+	knn error rate:0.18681
+	sae error rate:0.20771
+Brain_Tumor
+	ensamble error rate:0.16
+	svm error rate:0.21167
+	knn error rate:0.27389
+	sae error rate:0.25944
+	
+	我建议你先根据方差和协方差过滤掉一部分特征
+DBN 正确率
+lymphoma 0.3776
+colon    0.6424
+prostate 0.5251
+mit      0.4486
+nci64    0.1737
+Brain_Tumor 0.6667
+Leukemia2   0.3806
+NN 正确率
+lymphoma 0.6545
+colon    0.3276
+prostate 0.4986
+mit      0.6498
+nci64    0.3462
+Brain_Tumor 0.6667
+Leukemia2   0.6750

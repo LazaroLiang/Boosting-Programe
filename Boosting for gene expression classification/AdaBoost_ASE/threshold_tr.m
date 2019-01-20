@@ -60,6 +60,9 @@ while error_rate>0.6
 %             disp(['class number is smaller then all calsses:' ]);
 %             disp(unique(filtLables));
 %         end
+%         size(filtSample)
+%         size(filtLables)
+%         disp('*******************')
         sae_model=SAETrain(filtSample,filtLables);
         sae_result=SAEPredict(sae_model,train_set);
         sae_error_rate=sum(sae_result~=labels)/ length(labels);
